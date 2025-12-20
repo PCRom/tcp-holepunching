@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
+﻿using System.Net;
 
 namespace TcpHolePunching.Messages
 {
@@ -10,8 +6,7 @@ namespace TcpHolePunching.Messages
     {
         public IPEndPoint InternalClientEndPoint { get; set; }
 
-        public RequestIntroducerRegistrationMessage()
-            : base(MessageType.RequestIntroducerRegistration)
+        public RequestIntroducerRegistrationMessage() : base(MessageType.RequestIntroducerRegistration)
         {
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
+﻿using System.Net;
 
 namespace TcpHolePunching.Messages
 {
@@ -17,8 +13,7 @@ namespace TcpHolePunching.Messages
         /// </summary>
         public IPEndPoint ExternalPeerEndPoint { get; set; }
 
-        public ResponseIntroducerIntroductionMessage()
-            : base(MessageType.ResponseIntroducerIntroduction)
+        public ResponseIntroducerIntroductionMessage() : base(MessageType.ResponseIntroducerIntroduction)
         {
         }
 

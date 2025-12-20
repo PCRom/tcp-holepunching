@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Threading;
 using TcpHolePunching;
-using TcpHolePunching.Messages;
 
 namespace IdealServer
 {
@@ -50,7 +44,10 @@ namespace IdealServer
 
             Console.ReadLine();
 
-            Application.Run();
+            while (true)
+            {
+                Thread.Sleep(1000);
+            }
         }
     }
 }

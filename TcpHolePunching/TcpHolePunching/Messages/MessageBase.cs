@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace TcpHolePunching.Messages
 {
     /* Credits to Eric Maupin (Tempest) */

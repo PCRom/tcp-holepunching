@@ -24,26 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
-#if NET_4
-using System.Collections.Concurrent;
-#endif
-
-#if !SILVERLIGHT
-using System.Runtime.Serialization.Formatters.Binary;
-#endif
-
-#if !SAFE
-using System.Reflection.Emit;
-#endif
 
 namespace TcpHolePunching
 {
@@ -406,8 +390,7 @@ namespace TcpHolePunching
 								return new SerializationPair (os.Deserialize, os.Serialize);
 							});
 		}
-
-		private void LoadCtor (Type t)
+        private void LoadCtor (Type t)
 		{
 			if (this.ctor != null)
 				return;
@@ -421,10 +404,10 @@ namespace TcpHolePunching
 			this.deserializingConstructor = this.ctor.GetParameters().Length == 2;
 		}
 
-		#if !SILVERLIGHT
-		private object SerializableDeserializer (IValueReader reader)
+#pragma warning disable SYSLIB0011
+        private object SerializableDeserializer (IValueReader reader)
 		{
-			bool isNull = false;
+            bool isNull = false;
 			if (this.type.IsClass)
 				isNull = reader.ReadBool();
 
@@ -433,7 +416,7 @@ namespace TcpHolePunching
 
 			byte[] data = reader.ReadBytes();
 			using (MemoryStream stream = new MemoryStream (data))
-				return new BinaryFormatter().Deserialize (stream, null);
+				return new BinaryFormatter().Deserialize (stream);
 		}
 		
 		private void SerializableSerializer (IValueWriter writer, object value)
@@ -443,11 +426,10 @@ namespace TcpHolePunching
 
 			using (MemoryStream stream = new MemoryStream())
 			{
-				new BinaryFormatter().Serialize (stream, value);
+                new BinaryFormatter().Serialize (stream, value);
 				writer.WriteBytes (stream.ToArray());
 			}
 		}
-		#endif
 
 		private void Serialize (IValueWriter writer, object value, bool skipHeader)
 		{
@@ -459,11 +441,7 @@ namespace TcpHolePunching
 			return this.deserializer (reader, skipHeader);
 		}
 
-		#if NET_4
-		private static readonly ConcurrentDictionary<Type, ObjectSerializer> Serializers = new ConcurrentDictionary<Type, ObjectSerializer>();
-		#else
 		private static readonly Dictionary<Type, ObjectSerializer> Serializers = new Dictionary<Type, ObjectSerializer> ();
-		#endif
 
 		internal ObjectSerializer GetSerializerInternal (Type stype)
 		{
@@ -481,9 +459,7 @@ namespace TcpHolePunching
 				return baseSerializer;
 
 			ObjectSerializer serializer;
-			#if NET_4
-			serializer = Serializers.GetOrAdd (type, t => new ObjectSerializer (t));
-			#else
+
 			bool exists;
 			lock (Serializers)
 				exists = Serializers.TryGetValue (type, out serializer);
@@ -497,7 +473,6 @@ namespace TcpHolePunching
 						Serializers.Add (type, serializer);
 				}
 			}
-			#endif
 
 			return serializer;
 		}

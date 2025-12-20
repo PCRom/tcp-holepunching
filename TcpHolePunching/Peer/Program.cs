@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Threading;
 using TcpHolePunching;
 using TcpHolePunching.Messages;
 
@@ -39,16 +33,19 @@ namespace Peer
 
             IntroducerSocket.Bind(new IPEndPoint(IPAddress.Any, PORT));
 
-            Console.Write("Endpoint of the introducer (try 50.18.245.235:1618): ");
+            Console.Write("Endpoint of the introducer (try 107.175.197.30:1618): ");
 
             var input = Console.ReadLine();
-            input = (String.IsNullOrEmpty(input)) ? "50.18.245.235:1618" : input;
+            input = (String.IsNullOrEmpty(input)) ? "107.175.197.30:1618" : input;
             var introducerEndpoint = input.Parse();
 
             Console.WriteLine(String.Format("Connecting to the Introducer at {0}:{1}...", introducerEndpoint.Address, introducerEndpoint.Port));
             IntroducerSocket.Connect(introducerEndpoint.Address, introducerEndpoint.Port);
 
-            Application.Run();
+            while (true)
+            {
+                Thread.Sleep(1000);
+            }
         }
 
         static void Peer_OnConnectionAccepted(object sender, ConnectionAcceptedEventArgs e)
