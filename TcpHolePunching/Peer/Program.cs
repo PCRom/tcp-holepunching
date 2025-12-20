@@ -33,10 +33,10 @@ namespace Peer
 
             IntroducerSocket.Bind(new IPEndPoint(IPAddress.Any, PORT));
 
-            Console.Write("Endpoint of the introducer (try 107.175.197.30:1618): ");
+            Console.Write("Endpoint of the introducer (try 127.0.0.1:1618): ");
 
             var input = Console.ReadLine();
-            input = (String.IsNullOrEmpty(input)) ? "107.175.197.30:1618" : input;
+            input = (String.IsNullOrEmpty(input)) ? "127.0.0.1:1618" : input;
             var introducerEndpoint = input.Parse();
 
             Console.WriteLine(String.Format("Connecting to the Introducer at {0}:{1}...", introducerEndpoint.Address, introducerEndpoint.Port));
