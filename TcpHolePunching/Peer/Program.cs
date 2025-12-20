@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using TcpHolePunching;
@@ -15,9 +16,24 @@ namespace Peer
 
         private static int PORT = 53472;
 
+        private static string IntroducerIp = "127.0.0.1";
+        private static int IntroducerPort = 1618;
+
+
         static void Main(string[] args)
         {
             Console.Title = "Peer - TCP Hole Punching Proof of Concept";
+
+            if(args.Count() > 0)
+            {
+                IntroducerIp = args[0];
+            }
+            if (args.Count() > 1)
+            {
+                IntroducerIp = args[0];
+                IntroducerPort = int.Parse(args[1]);
+            }
+
 
             ListenSocket = new NetworkPeer();
             ListenSocket.OnConnectionAccepted += (s, e1) => Console.WriteLine("ListenSocket.OnConnectionAccepted");
@@ -33,10 +49,10 @@ namespace Peer
 
             IntroducerSocket.Bind(new IPEndPoint(IPAddress.Any, PORT));
 
-            Console.Write("Endpoint of the introducer (try 127.0.0.1:1618): ");
+            Console.Write("Endpoint of the introducer (try " + IntroducerIp + ":" + IntroducerPort + "): ");
 
             var input = Console.ReadLine();
-            input = (String.IsNullOrEmpty(input)) ? "127.0.0.1:1618" : input;
+            input = (String.IsNullOrEmpty(input)) ?  IntroducerIp + ":" + IntroducerPort : input;
             var introducerEndpoint = input.Parse();
 
             Console.WriteLine(String.Format("Connecting to the Introducer at {0}:{1}...", introducerEndpoint.Address, introducerEndpoint.Port));

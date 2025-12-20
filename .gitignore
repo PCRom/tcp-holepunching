@@ -429,3 +429,4 @@ FodyWeavers.xsd
 
 # Extra Manual Ignore Entries
 
+TcpHolePunching/Peer/Properties/launchSettings.json
