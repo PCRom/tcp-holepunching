@@ -1,0 +1,1 @@
+dotnet Introducer.dll 2>&1 | tee log.txt
