@@ -73,7 +73,7 @@ namespace TcpHolePunching
             var newRegistrant = new Client(socket);
             Clients.Add(newRegistrant);
 
-            Task_BeginReceive(newRegistrant);
+            Task_BeginReceive(newRegistrant, socket);
             
             // Invoke the event
             if (OnConnectionAccepted != null)
@@ -99,21 +99,21 @@ namespace TcpHolePunching
                 Console.WriteLine(String.Format("Warning: Expected to send {0} bytes but actually sent {1}!",
                                                 expectedBytesSent, numBytesSent));
 
-            Console.WriteLine(String.Format("Sent a {0} byte {1}Message to {2}.", numBytesSent, messageType, to));
+            Console.WriteLine(String.Format("Sent a {0} byte {1} | Message to {2}.", numBytesSent, messageType, to));
 
             if (OnMessageSent != null)
-                OnMessageSent(this, new MessageSentEventArgs() {Length = numBytesSent, To = to});
+                OnMessageSent(this, new MessageSentEventArgs() {Length = numBytesSent, To = to });
         }
 
-        private void Task_BeginReceive(Client registrant)
+        private void Task_BeginReceive(Client registrant, Socket socket)
         {
             var task = Task.Factory.FromAsync<Int32>(registrant.Socket.BeginReceive(registrant.Buffer, 0, registrant.Buffer.Length, SocketFlags.None, null, null), registrant.Socket.EndReceive);
             task.ContinueWith(nextTask =>
             {
                 try
                 {
-                    Task_OnReceiveCompleted(task.Result, registrant);
-                    Task_BeginReceive(registrant); // Receive more data
+                    Task_OnReceiveCompleted(task.Result, registrant, socket);
+                    Task_BeginReceive(registrant, socket); // Receive more data
                 }
                 catch (Exception ex)
                 {
@@ -124,18 +124,29 @@ namespace TcpHolePunching
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
-        private void Task_OnReceiveCompleted(int numBytesRead, Client registrant)
+        private void Task_OnReceiveCompleted(int numBytesRead, Client registrant, Socket socket)
         {
-            // Build back our MessageReader
-            var reader = new BufferValueReader(registrant.Buffer);
-            var message = new Message();
-            message.ReadPayload(reader);
-            reader.Position = 0;
+            //127.0.0.1:1618
 
-            Console.WriteLine(String.Format("Received a {0} byte {1}Message from {2}.", numBytesRead, message.MessageType, registrant.Socket.RemoteEndPoint));
+            if (numBytesRead > 0) // Do not read 0 bytes
+            {
+                // Build back our MessageReader
+                var reader = new BufferValueReader(registrant.Buffer);
+                var message = new Message();
+                message.ReadPayload(reader);
+                reader.Position = 0;
 
-            if (OnMessageReceived != null)
-                OnMessageReceived(this, new MessageReceivedEventArgs() { From = (IPEndPoint) registrant.RemoteEndPoint, MessageReader = reader, MessageType = message.MessageType });
+                Console.WriteLine(String.Format("Received a {0} byte {1} | Message from {2}.", numBytesRead, message.MessageType, registrant.Socket.RemoteEndPoint));
+
+                if (OnMessageReceived != null)
+                    OnMessageReceived(this, new MessageReceivedEventArgs() { From = (IPEndPoint)registrant.RemoteEndPoint, MessageReader = reader, MessageType = message.MessageType });
+                
+            }
+            else
+            {
+                Console.WriteLine(String.Format("Dropped the client due to second round byte read was {0} bytes | Message to {1}.", numBytesRead, socket.RemoteEndPoint));
+                socket.BeginDisconnect(true, null, socket);
+            }
         }
 
         /// <summary>
