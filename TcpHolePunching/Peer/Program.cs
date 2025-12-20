@@ -28,7 +28,7 @@ namespace Peer
             {
                 IntroducerIp = args[0];
             }
-            if (args.Count() > 1)
+            else if (args.Count() > 1)
             {
                 IntroducerIp = args[0];
                 IntroducerPort = int.Parse(args[1]);
