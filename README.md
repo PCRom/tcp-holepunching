@@ -9,10 +9,12 @@ To demonstrate hole punching / NAT traversal using the TCP protocol.
 UDP hole punching is more well known and TCP hole punching is less supported by different router models, so this is a proof of concept.
 
 
-.NET 8 Ubuntu Instructions
+.NET 9 Ubuntu Instructions
 ------------
-1. Update packages (apt-get update)
-2. Install .NET 8 Framework (apt-get install dotnet-runtime-8.0)
+1. OPTIONAL:: Remove previous version (apt-get remove dotnet-runtime-8.0)
+2. Add DotNet Backports(add-apt-repository ppa:dotnet/backports)
+3. Update packages (apt-get update)
+4. Install .NET 9 Framework (apt-get install dotnet-runtime-9.0)
 
 TCP HolePunch Instructions
 ------------
