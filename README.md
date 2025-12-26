@@ -20,7 +20,11 @@ TCP HolePunch Instructions
 ------------
 
 1. Run the Introducer executable on a publicy reachable server (username@hostname:/folder# dotnet Introducer.dll).
-2. OR use  
+2. OR use the included introducer.sh it includes logging to a file called log.txt (you shouldn't need to add write but if you do then use "0666")
+    More information for introducer.sh, How to use:
+       A. drop this script in the same directory as the executable
+       B. give introducer.sh execute permission "0755"
+       C. run "sh introducer.sh" in the terminal
 
 3. Run the Peer executable on both PCs you want to connect.
 
