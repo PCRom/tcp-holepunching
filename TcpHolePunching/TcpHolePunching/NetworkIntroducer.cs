@@ -118,7 +118,7 @@ namespace TcpHolePunching
                 catch (Exception ex)
                 {
                     var exceptionMessage = (ex.InnerException != null) ? ex.InnerException.Message : ex.Message;
-                    Console.WriteLine(exceptionMessage);
+                    Console.WriteLine(ex.StackTrace + Environment.NewLine + exceptionMessage);
                     ShutdownAndClose();
                 }
             }, TaskContinuationOptions.OnlyOnRanToCompletion);
@@ -154,6 +154,8 @@ namespace TcpHolePunching
         /// </summary>
         public void ShutdownAndClose()
         {
+            return;
+            /*
             Console.WriteLine("Shutting down sockets...");
 
             try
@@ -163,7 +165,7 @@ namespace TcpHolePunching
             }
             catch
             {
-            }
+            }*/
         }
     }
 }
